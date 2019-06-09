@@ -1,0 +1,33 @@
+---
+title: "Code Portfolio - Week1"
+author: "HTakano"
+date: "3/20/2019"
+output:
+  html_document: default
+---
+
+* From Data Camp - Introduction to R * 
+
+### "print" 
+``print()`` function displays its argument. The following example demonstrates printing the resulted value of "chair1", which is 2.414214.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+chair1 <- 1 + sqrt(2)
+print(chair1)
+```
+
+### "class"
+``class()`` function tells us what class types of a specified variable. As an example below, I try to identify the class types of the followings.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+numeric1 <- 17/2
+character1 <- "desk1"
+logical1 <- TRUE
+```
+```{r, message=FALSE, warning=FALSE}
+class(numeric1)
+class(character1)
+class(logical1)
+```
