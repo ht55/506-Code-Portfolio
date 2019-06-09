@@ -1,0 +1,67 @@
+---
+title: "Code Portfolio - Week5"
+author: "HTakano"
+date: "4/19/2019"
+output: html_document
+---
+
+#### **< Vector - 1 dimension & homogeneous >** 
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+### c() 
+`c()` combines a list of elements as below.
+
+```{r, message=FALSE, warning=FALSE}
+c(-3, 0, 3)
+```
+```{r, message=FALSE, warning=FALSE}
+list(-2, 4, 10)
+```
+
+### typeof
+``typeof()`` function identifies vector types as follow.
+
+```{r, message=FALSE, warning=FALSE}
+typeof("p")
+typeof(15:3)
+typeof(10)
+typeof(as.complex(-1))
+typeof(TRUE)
+```
+
+### length
+``length()`` function determines the length in ().
+```{r, message=FALSE, warning=FALSE}
+cake5 <- list("p", 15:3, 10, TRUE, as.complex(-1))
+length(cake5)
+```
+
+
+#### **< List - 1 dimension & heterogeneous >** 
+### list
+`list()` combines a list of elements as below.
+```{r, message=FALSE, warning=FALSE}
+col5 <- list("red", "blue", "yellow", "green")
+length(col5)
+```
+
+
+#### **< Matrix - 2 dimension & homogeneous >**
+### matrix
+``matrix()`` has the same number of rows and columns.
+```{r, message=FALSE, warning=FALSE}
+matrix(1:4, nrow = 2, ncol = 2)
+```
+
+
+#### **< Data Frame - 2 dimension & heterogeneous >***
+### data frame
+Data Frame is a list of vectors of different data types, with the same length.
+
+```{r, message=FALSE, warning=FALSE}
+df5 <- data.frame("case" = c(101, 102, 103),
+                  "size" = c("small", "medium", "large"),
+                  "weight" = c(8.7, 0.5, 22))
+df5
+```
