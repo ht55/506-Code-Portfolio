@@ -1,0 +1,59 @@
+---
+title: "Code Portfolio - Week2"
+author: "HTakano"
+date: "3/27/2019"
+output: html_document
+---
+
+### "readr" 
+``readr()`` function let us read files fast. The following example demonstrates reading the data set EPA2017 file in csv format smoothly. As this week’s example data, I use US EPA 2017 data, named “EPA2017”.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+library(readr)
+EPA2017 <- read_csv("~/Desktop/EPA2017.csv")
+print(EPA2017)
+```
+
+### “nrow” & “ncol”
+``nrow()`` function tells us how many rows in the data set and ``ncol()`` tells us how many columns in a data set. The example below shows the number of rows and columns in the data set EPA2017.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+nrow(EPA2017)
+ncol(EPA2017)
+```
+
+### “str”
+``str()`` function displays the internal structure of a data set. I found this as one of the most useful functions to idenfify data sets. As below, str(EPA2017) shows important information about the data set such as number of observations/variables, and class types.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+str(EPA2017)
+```
+
+### “head” & “tail”
+``head()`` function displays the first several rows of a data set, while ``tail()`` function displays the last several rows of a data set. As an example, I would like to find out the first & last 6 rows of 1-5 of 7 columns.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+head(EPA2017[, c(7:12, 6)])
+tail(EPA2017[, c(7:12, 6)])
+```
+
+### “filter”
+``filter()`` fuction allows us to find rows/cases where conditions are true. I found this to be useful when I only want to see specific observations that satisfy specified conditions. Below, I am trying to see the number of entry with POC level = 2. It looks lilke there are 6350 entries with POC=2.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+filter(EPA2017, `POC` == 2) 
+```
+
+### “summary”
+``summary()`` function returns the values of a data set or targeted variable and results of various modell fitting fuctions, such as mean, median, minimum, maximum, 1st & 3rd quantiles. The following example shows the summary of the entire EPA2017 data set.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+summary(EPA2017)
+```
