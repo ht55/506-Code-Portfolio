@@ -1,0 +1,77 @@
+---
+title: "Code Portfolio - Week12"
+author: "HTakano"
+date: "6/7/2019"
+output: html_document
+---
+
+## PCA (Principal Components Analysis)
+
+```{r, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+wine12 <- read_csv("~/Desktop/wine.csv")
+glimpse (wine12)
+```
+
+```{r, message=FALSE, warning=FALSE}
+X  <- wine12[,-1]
+Xscaled12 <- scale(wine12)
+winePCA12 <- prcomp(Xscaled12)
+summary(winePCA12)
+```
+
+```{r, message=FALSE, warning=FALSE}
+Xnew12 <- winePCA12$x[,(1:5)]
+head(Xnew12)
+```
+
+### princomp
+``princomp()`` performs a principal components analysis on the given numeric data matrix and returns the results as an object of class ``princomp``.
+
+```{r, message=FALSE, warning=FALSE}
+pca12 <- princomp(mtcars)
+screeplot(pca12)
+```
+```{r, message=FALSE, warning=FALSE}
+library(factoextra)
+var12 <- get_pca_var(pca12)
+var12
+```
+```{r, message=FALSE, warning=FALSE}
+install.packages("corrplot", repos = "http://cran.us.r-project.org")
+library("corrplot")
+```
+```{r, message=FALSE, warning=FALSE}
+library("corrplot")
+corrplot(var12$coord, is.corr=FALSE)
+```
+
+### ggbiplot from Data Camp
+```ggbiplot()`` lelt us draw biplot by using ggplot. I will illustrate the mtcars pca with ggbiplot.
+
+```{r, message=FALSE, warning=FALSE}
+install.packages("devtools", repos = "http://cran.us.r-project.org")
+library(devtools)
+install_github("vqv/ggbiplot")
+library(ggbiplot)
+```
+
+```{r, message=FALSE, warning=FALSE}
+mtcars.pca <- prcomp(mtcars[,c(2:8,10,11)], center = TRUE,scale. = TRUE)
+ggbiplot(mtcars.pca)
+```
+
+```{r, message=FALSE, warning=FALSE}
+mtcars.pca <- prcomp(mtcars[,c(2:8,10,11)], center = TRUE,scale. = TRUE)
+ggbiplot(mtcars.pca)
+```
+
+
+*The folowing code chunk is from Data Camp Tutorial of PCA.*
+*(https://www.datacamp.com/community/tutorials/pca-analysis-r)*
+*I only copied these codes to see how the ggbiplot with ellipse look like, because this is my very first time to see/use plot with ellipses like this.*
+```{r, message=FALSE, warning=FALSE}
+mtcars.country <- c(rep("Japan", 3), rep("US",4), rep("Europe", 7), rep("US",3), "Europe", rep("Japan", 3), rep("US",4), rep("Europe", 3), "US", rep("Europe", 3))
+ggbiplot(mtcars.pca, ellipse = TRUE,  labels = rownames(mtcars), groups = mtcars.country)
+```

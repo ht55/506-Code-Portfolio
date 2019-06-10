@@ -1,0 +1,114 @@
+---
+title: "Code Portfolio - Week11"
+author: "HTakano"
+date: "5/29/2019"
+output: html_document
+---
+
+## Hierarchical Clustering
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)  
+library(cluster)    
+library(factoextra) 
+library(dendextend)
+```
+
+### hclust
+``hclust()`` implements hierarchical clustering. Suitable for Agglomerative Hierarchical Clustering. Below is an example of hierarchical clustering of the data US Arrest, with agglomeration method = manhattan and hc method = average.
+
+```{r, message=FALSE, warning=FALSE}
+df11 <- USArrests
+df11 <- scale(df11)
+head(df11)
+```
+```{r, message=FALSE, warning=FALSE}
+d11 <- dist(df11, method = "manhattan")
+hc11 <- hclust(d11, method = "average" )
+plot(hc11, cex = 0.7, hang = -1)
+```
+
+### agnes
+``agnes()`` works similar to ``hclust()``, but it also can gives us the agglomerative coefficient.
+
+```{r, message=FALSE, warning=FALSE}
+library(cluster)
+hc112 <- agnes(df11, method = "average")
+hc112$ac
+```
+* This agglomerative coefficient is the measurement of the amount of clustering structure found.
+
+* Let's check how Ward’s method identifies the strongest clustering structure of the four methods assessed as the following.
+
+```{r, message=FALSE, warning=FALSE}
+library(purrr)
+Ward11 <- c( "average", "single", "complete", "ward")
+names(Ward11) <- c( "average", "single", "complete", "ward")
+acAll <- function(x) {
+  agnes(df11, method = x)$ac
+}
+map_dbl(Ward11, acAll)
+```
+
+```{r, message=FALSE, warning=FALSE}
+hc113 <- agnes(df11, method = "ward")
+pltree(hc113, cex = 0.7, hang = -1, main = "Agnes Dendrogram") 
+```
+
+
+### diana
+``diana()`` computes a divisive hierarchical clustering of the data set returning an object of class. Suitable for Divisive Hierarchical Clustering. It can tell us the divise coefficient as well.
+
+```{r, message=FALSE, warning=FALSE}
+hc114 <- diana(df11)
+hc114$dc
+pltree(hc114, cex = 0.7, hang = -1, main = "Diana Dendrogram")
+```
+
+### With Dendrogram (Ward's method)
+
+```{r, message=FALSE, warning=FALSE}
+hc115 <- hclust(d11, method = "ward.D2" )
+sg11 <- cutree(hc115, k = 4)
+table(sg11)
+plot(hc115, cex = 0.8)
+rect.hclust(hc115, k = 4, border = 2:5)
+```
+
+### fviz_cluster
+``fviz_cluster()`` provides another elegant way of scatter plot.
+```{r, message=FALSE, warning=FALSE}
+fviz_cluster(list(data = df11, cluster = sg11))
+```
+
+
+### tanglegram
+``tanglegram()`` plots a tangram plot of a side by side trees.
+```{r, message=FALSE, warning=FALSE}
+tango11 <- dist(df11, method = "manhattan")
+thc11 <- hclust(tango11, method = "average")
+thc112 <- hclust(tango11, method = "ward.D2")
+dg11 <- as.dendrogram (thc11)
+dg112 <- as.dendrogram (thc112)
+tanglegram(dg11, dg112)
+```
+
+```{r, message=FALSE, warning=FALSE}
+dglist11 <- dendlist(dg11, dg112)
+tanglegram(dg11, dg112,
+  highlight_distinct_edges = FALSE, 
+  common_subtrees_color_lines = FALSE, 
+  common_subtrees_color_branches = TRUE, 
+  main = paste("entanglement =", round(entanglement(dglist11), 2))
+  )
+```
+
+
+### fviz_nbclust
+``fviz_nbclust()`` is used to determine optimal clustering with a couple of different methods as below.
+
+```{r, message=FALSE, warning=FALSE}
+fviz_nbclust(df11, FUN = hcut, method = "wss") # Elbow Method
+fviz_nbclust(df11, FUN = hcut, method = "silhouette") # Average Silhouette Method
+gap_stat11 <- clusGap(df11, FUN = hcut, nstart = 25, K.max = 10, B = 50)
+fviz_gap_stat(gap_stat11)
+```

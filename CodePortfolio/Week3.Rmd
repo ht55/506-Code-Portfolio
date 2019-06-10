@@ -1,0 +1,51 @@
+---
+title: "Code Portfolio - Week3"
+author: "HTakano"
+date: "4/3/2019"
+output: html_document
+---
+
+### "ls" 
+``ls()`` function displays all the objects in the working environment. The following example demonstrates printing the resulted value of "chair1", which is 2.414214.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+ob1 <- 3.2
+ob2 <- sqrt(ob1)
+ob3 <- ob1 * ob2
+```
+```{r, message=FALSE, warning=FALSE}
+ls()
+ls(all.names = TRUE)
+```
+
+### "rm" 
+``rm()`` function removes targeted objects from the workspace. For example, I would like to remove "ob1" from the previous workspace.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+rm(ob1)
+```
+```{r, message=FALSE, warning=FALSE}
+ls()
+ls(all.names = TRUE)
+```
+"ob1" was removed successfully. I sometimes use ``knitr::clean_cache()`` to clear the cache in workspace otherwise some functions do not work properly, especially for knitting to publilsh in presentation formats.
+
+### "getwd" 
+``getwd()`` function prints the current working directly. It's on my desktop and in my "506 Code Portfolilo" folder :) We can also use ``setwd()`` to change this.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+getwd()
+```
+
+### "write.tablel" & "read.table"
+``write.table()`` function is used to export r data files as simple text files that also can be read with Excel, and etc. Conversely, ``setwd()`` is used to read .txt files into R. As an example below, I use a sample text data "Chart Data" to read.
+
+#### *Example:*
+```{r, message=FALSE, warning=FALSE}
+read.table("~/Desktop/506 Code Portfolio/Week3/Chart data.txt")
+```
+Reading files into R, ``read.csv`` and ``read.delim`` are other options for specified data files.
+

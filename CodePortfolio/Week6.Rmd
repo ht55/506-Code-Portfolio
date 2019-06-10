@@ -1,0 +1,60 @@
+---
+title: "Code Portfolio - Week6"
+author: "HTakano"
+date: "4/25/2019"
+output:
+  html_document: default
+---
+
+### filter
+``filter()`` allows us to subset observations based on their values. As an example, I filtered the iris data by Petal.Length=1.5.
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+data(iris)
+filter(iris, Petal.Length == 1.5)
+```
+
+### arrange
+
+``arrange()`` function is similar to ``filter()``, however, it changes their order instead of selecting rows. I am trying to arrnage the iris data by the descending order of Sepal.Width.
+``arrange()`` function is similar to ``filter()``, however, it changes their order instead of selecting rows. As a
+```{r, message=FALSE, warning=FALSE}
+arrange(iris, desc(Sepal.Width))
+```
+
+### mutate
+``mutate()`` allows us to add or transform columns as below.
+```{r, message=FALSE, warning=FALSE}
+mutate(iris, Sepal.Length - Petal.Length)
+```
+```{r, message=FALSE, warning=FALSE}
+transmute(iris, Sepal.Length - Petal.Length)
+```
+
+### mean
+``mean()`` function computes the mean of argument(). Below, I will find out the mean of Petal.Length of iris data.
+```{r, message=FALSE, warning=FALSE}
+mean(iris$Petal.Length)
+```
+
+### median
+``median()`` function coputes the median of the argument(). I will use the same variable to compare the mean, median, weighted mean, and weighted median.
+```{r, message=FALSE, warning=FALSE}
+median(iris$Petal.Length)
+```
+
+### weightedmean
+With ``raster`` package, ``weightedmean()`` function computes the weighted mean of the argument (). 
+```{r, message=FALSE, warning=FALSE}
+library(raster)
+weighted.mean(iris$Petal.Length)
+```
+
+### weightedmedian
+``weightedMedian()`` computes the weighted median of the argument() with ``matrixStats`` package as follows.
+```{r, message=FALSE, warning=FALSE}
+library(matrixStats)
+weightedMedian(iris$Petal.Length)
+```
+
+

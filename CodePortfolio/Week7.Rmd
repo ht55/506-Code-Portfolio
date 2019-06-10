@@ -1,0 +1,72 @@
+---
+title: "Code Portfolio - Week7"
+author: "HTakano"
+date: "4/30/2019"
+output:
+  html_document: default
+---
+
+### ggplot
+``ggplot()`` initializes ggplot object with components to the plot. In the following example, I will display various mpg data plots.
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+library(tidyverse)
+library(ggplot2)
+```
+#### Scatter Plot with mapping aes
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = cty, y = displ, color = hwy, shape = class)) 
+```
+
+#### Scatter Plot with mapping geometric object
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = mpg, mapping = aes(x = cty, y = displ)) + 
+  geom_point(mapping = aes(color = hwy)) + 
+  geom_smooth()
+```
+
+#### Facets
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = cty, y = displ)) + 
+  facet_wrap(~ hwy, nrow = 3)
+```
+
+#### Bar chart
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = mpg) + 
+  geom_bar(mapping = aes(x = displ, fill = class, position = "dodge"))
+```
+
+#### Histogram
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = mpg, aes(mpg$displ)) + 
+  geom_histogram()
+```
+
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = mpg, aes(x = mpg$displ)) + 
+  geom_histogram(col = "#225563",
+                 fill = "#a6b9bf", 
+                 alpha = .7) + 
+  labs(title="Histogram for Displ", x="Displ", y="Count")
+```
+
+
+#### Polygon chart
+```{r, message=FALSE, warning=FALSE}
+ggplot(mpg, aes(cty, displ, group = class)) +
+  geom_polygon(fill = "#b4abba", colour = "#1a171c")
+```
+
+#### Pi chart
+```{r, message=FALSE, warning=FALSE}
+wind7 <- ggplot(data = mpg, aes(x = displ, fill = class)) + 
+  geom_bar(width = 1.2)
+  coord_polar("y")
+wind7 + coord_polar(theta = "y")
+```
+ 
+ 

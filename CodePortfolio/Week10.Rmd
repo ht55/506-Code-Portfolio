@@ -1,0 +1,27 @@
+---
+title: "Code Portfolio - Week10"
+author: "HTakano"
+date: "5/23/2019"
+output: html_document
+---
+
+## Clustering
+
+### dist
+``stats::dist() `` computes the distance measures: *euclidean*, *maximum*, *manhattan*, *canberra*, *binary*, or *minkowski*.
+
+Example:
+```{r, message=FALSE, warning=FALSE}
+MTA1 <- c(3, 0, 7, 10)
+MTA2 <- c(8, 2, 5, 0)
+MTA12 <- matrix(c(MTA1, MTA2), byrow = T, nrow = 2)
+MTA12
+```
+```{r, message=FALSE, warning=FALSE}
+dist(MTA12, method = "euclidean")
+dist(MTA12, method = "maximum")
+dist(MTA12, method = "manhattan")
+dist(MTA12, method = "canberra")
+dist(MTA12, method = "binary")
+dist(MTA12, method = "minkowski")
+```

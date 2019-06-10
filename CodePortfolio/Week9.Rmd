@@ -1,0 +1,43 @@
+---
+title: "506 Week 9 Demo"
+author: "HTakano"
+date: "5/20/2019"
+output:
+  ioslides_presentation:
+    css: mystyles2.css
+---
+
+*****
+
+### Introduction
+
+*This is a quick demo!* 
+
+**Introduction
+
+### knitr
+``knitr()`` function is a general purpose literate programming engine that allows us to publish Rmd documents in sofisticated formats; pdf, html, various slilde presentations formats, etc. As an example, I created a quick demo Rmd file and knit it as a slilde presentation.
+
+*****
+
+
+### Analysis
+
+**Polygon chart of mpg values**
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(knitr)
+library(ggplot2)
+ggplot(mpg, aes(hwy, displ, group = class)) +
+  geom_polygon(fill = "#dbe4c3", colour = "#212711", alpha = 0.8)
+```
+
+*****
+
+### Conclusion
+
+** Conclusion
+
+
+
+
+* The End*
