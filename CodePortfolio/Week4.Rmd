@@ -1,0 +1,116 @@
+---
+title: "Code Portfolio - Week4"
+author: "HTakano"
+date: "4/10/2019"
+output: html_document
+---
+
+#### *- Fundamentals of R markdown -*
+#### *- Exploring with other languages -*
+
+### Code Chunks
+
+R markdown code chunks are written as
+```{r}
+```
+The "{r}" part can be modified for suitable knit output options. Most common options are displayed as the following code chunk.
+```{r, echo=TRUE, eval=TRUE, message=TRUE, warning=TRUE}
+x4 <- 2 + 3
+```
+
+### Inline Code
+
+Inline codes are written as `r `. I am trying to insert the result of as inline code below.
+
+```{r, message=FALSE, warning=FALSE}
+bird4 <- 10^6
+```
+> `r bird4` ounce = 62500 pound
+
+
+### Python 
+
+In order to use Python code in R properly, I needed to install ``"reticulate"`` package with the CRAN url.
+
+```{r, message=FALSE, warning=FALSE}
+install.packages("reticulate", repos = "http://cran.us.r-project.org")
+```
+```{r}
+library(reticulate)
+use_python("/usr/local/bin/python")
+```
+```{python}
+x = 'OMG, Python in R!'
+print(x.split(' '))
+```
+Another example of python chunk with plot.
+```{python}
+import matplotlib.pyplot as plt
+plt.plot([3, 12, 0, 4])
+plt.show()
+```
+
+### Bash
+
+```{bash}
+ls *Rmd
+```
+
+
+### Parameters
+R markdown documents can include one or more parameters whose values can be set for rendered reports. 
+The following example is the sea ice data that I used for another project. I have set the parameters as; month = August, pole = North pole, and the year = 1979 with customized color fill.
+
+```{r, warning=FALSE, message=FALSE}
+library(rnoaa)
+library(rgdal)
+library(ggplot2)
+```
+```{r, warning=FALSE, message=FALSE}
+urls <- seaiceeurls(mo = 'Aug', pole = 'N', yr = 1979)
+out <- seaice(urls)
+ggplot(out, aes(long, lat, group = group)) + 
+  geom_polygon(fill = "skyblue1") + 
+  theme_ice()
+```
+
+### Tables and kable
+
+R automatically displays data frames and matrixes as defults, but it can be shown with additional formatting.
+```{r, message=FALSE, warning=FALSE}
+library(knitr)
+kable(iris[5:12, ], caption = "Iris knitr kable")
+```
+
+### Basics
+
+R markdown text can be formatted as other word documents.
+
+> # Header 1
+> ## Header 2
+> ### Header 3
+> #### Header 4
+> ##### Header 5
+
+1. first
+2. second
+3. third
+
+- *italics*
+- **bold**
+- `monospace`
+- [hyperlink to Google](google.com)
+- Equation $e^{i\pi} + 1 = 0$
+
+### Output Formats
+R markdown documents can be rendered to other formats such as MS Word. I will try demonstrating it with 
+
+```{r, warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(viridis)
+```
+```{r, warning=FALSE, message=FALSE}
+image(volcano, col = viridis(670, option = "B"))
+```
+
+============================================
