@@ -1,0 +1,226 @@
+---
+title: "Gapminder Exploratory Data Analysis"
+author: "Hiroko Takano"
+date: "6/2/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+### Objectives
+The purpose of this analysys is to demonstrate a degree of insight of Exploratori Data Analysis by using Gapminder data. I will show the core EDA concepts, issues, and trends with visualization techniques.
+
+### Questions
+1. Is there any relationship between **lilfe expectancy** and **income**? If there is, what kind of relationship is it?
+2. Identify a trend in this data set.
+3. How have our GDP rate changed from 1915 to 2015? Is there anything we can predict based on this data set's EDA?
+
+### Analysis 
+#### Data Description & Data Clearnsing
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages("corrr", repos = "http://cran.us.r-project.org")
+library(tidyverse)
+library(cluster)
+library(factoextra)
+library(dendextend)
+library(corrplot)
+library(corrr)
+library(DT)
+library(readr)
+library(purrr)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+gapminder <- read_csv("gapminder.csv")
+str(gapminder)
+gm1 <- unique(gapminder$Country)
+str(gm1)
+gm2 <- unique(gapminder$Year)
+str(gm2)
+gm3 <- unique(gapminder$region)
+str(gm3)
+```
+
+The data set *gapminder* contains 41248 observations and 6 variables. 
+The variables are the following;
+
+* **Country** : *character variable* 197 countries
+* **Year** : *interger variable* 216 unique entities 
+* **Life** (life expectancy) : *numerical variable*
+* **Population** (census data collected about every 10 years) : *numerical variable*
+* **Income** (GDP per capita) : *interger variable*
+* **Region** : *character variable* 6 regions
+
+The data set was collected from the year 1800 - 2015 in a decade increment, from 6 regions (South Asia, Middle East & North Africa, America, Europe & Central Asia, Sub-Saharan Africa, and East Asia & Pacific) 197 countries. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+gmNA <- sum(is.na(gapminder))
+sum(is.na(gapminder$Country))
+sum(is.na(gapminder$Year))
+sum(is.na(gapminder$life))
+sum(is.na(gapminder$population))
+sum(is.na(gapminder$income))
+sum(is.na(gapminder$region))
+```
+
+``is.na()`` result shows thata there are `r gmNA` missing values in this data set. However, the further analysis with ``sum(is.na()`` on each variables displaied that the only *population* and *income* have missing values and they are just left as blank because of theier values are redundant. As an important process of data cleansing, I use ``fill()`` function to fill the redundant missing values with previous values to compete the data set.
+Later on, there will be another type of missing values that I will impute them by using the argument ``na.rm = TRUE``.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+gmNA2 <- fill(gapminder, population)
+gmna3 <- fill(gmNA2, income)
+gmNA4 <- sum(is.na(gmna3))
+```
+
+Now, the new is.na() result tells that the number of missing values in this data is `r gmNA4`.
+
+#### Data Vasualilzation
+
+ First, I would like to compare the GDP value changes by region over 100 years from 1915 and 2015 with box plots.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(plyr)
+library(reshape2)
+library(plotly)
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+gmt2 <- gapminder %>% filter(Year == 1915)
+ggplot(gmt2, aes(x = factor(region), y = income)) + geom_boxplot(aes(fill = region), size = 0.5) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title = "GDP by regian in 1915", x = "Region", y = "GDP per capita", fill = "6 Regions")
+```
+
+```{r, message=FALSE, warning=FALSE}
+summary(gmt2$income)
+m1915 <- median(gmt2$income, na.rm = TRUE) # Excluding 11 missing values
+m1915
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+gmt3 <- gapminder %>% filter(Year == 2015)
+ggplot(gmt3, aes(x = factor(region), y = income)) + geom_boxplot(aes(fill = region), size = 0.5) + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title = "GDP by regian in 2015", x = "Region", y = "GDP per capita", fill = "6 Regions")
+```
+
+```{r, message=FALSE, warning=FALSE}
+summary(gmt3$income)
+m2015 <- median(gmt3$income)
+m2015
+```
+
+By comparing two bar plots above, "GDP by regions in 1915" and ""GDP by regions in 2015", it is pretty significant that the overall GDP rate by regions had increased dramatically over the past 100 years. For instance, the median of GDP in 1915 was `r m1915` and the median of GDP in 2015 is `r m2015`. Especially the growth of Middle East & North Africa is the most significant.
+
+Here is another way of showing with scatterplot.
+```{r}
+filter(gmna3, Year%in%c(1815, 2015)) %>%
+  ggplot(aes(life, income, col = region)) +
+  geom_point() +
+  facet_grid(region~Year) +
+  labs(title =  "GDP comaprison by region in 1815 vs 2015", x = "Life expectancy", y = "Income", fill = "6 Regions")
+```
+
+These scatterplot show there exist correlations between life and income.
+
+#### Clustering Analysis
+##### Agglomerative Hierarchical Clustering analysis
+
+I will be working on grouped data of Albania and perform Agglomerative Hierarchical Clustering analysis, followed by Divisive Hierarchical Clustering analysis.
+
+```{r, message=FALSE, warning=FALSE}
+df <- data.frame(gmna3)
+df1 <- df[217:432, ]
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+df2 <- dist(df1, method = "manhattan")
+hc11 <- hclust(df2, method = "average" )
+plot(hc11, cex = 0.5, hang = -1)
+```
+
+Next, let's try draw a dendrogram with subgroups as below.
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+hc14 <- hclust(df2, method = "ward.D2" )
+subg <- cutree(hc14, k = 3)
+table(subg)
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+plot(hc14, cex = 0.6)
+rect.hclust(hc14, k = 3, border = 2:5)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+fviz_cluster(list(data = df2, cluster = subg))
+```
+
+Now, let's try ``agnes()``.
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+hc12 <- agnes(df2)
+agc <- hc12$ac
+```
+Agglomerative coefficient is `r agc`.
+
+
+Next, let's compare which hierarchical clustering methods works the best.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+types <- c("average", "single", "complete", "ward")
+names(types) <- c("average", "single", "complete", "ward")
+ac <- function(x) {agnes(df2, method = x)$ac}
+map_dbl(types, ac)
+```
+
+##### Divisive Hierarchical Clustering
+Let's compute with ``diana()`` function.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+hc13 <- diana(df2)
+dvc <- hc13$dc
+```
+Divise coefficient is `r dvc`.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+hc_a <- agnes(df2)
+cutree(as.hclust(hc_a), k = 3)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+hc_d <- diana(df2)
+cutree(as.hclust(hc_d), k = 3)
+```
+
+As the last visualization, let's draw a tanglegram to show two dendrograms simulteneously.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+rdist <- dist(df2, method = "manhattan")
+hc11 <- hclust(rdist, method = "average")
+hc12 <- hclust(rdist, method = "ward.D2")
+dend11 <- as.dendrogram (hc11)
+dend12 <- as.dendrogram (hc12)
+tanglegram(dend11, dend12)
+```
+
+##### Determining Optimal Clusters
+Let's find out optimal clusters for this data by using Elbow Method as follows.
+{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+fviz_nbclust(df2, FUN = hcut, method = "silhouette")
+
+
+
+### Conclusion
+As I have shown previouosly, clustering analysis is very strong tool for data analysis in the unsupervised setting. This gapminder data set is relatively large, and R could be able to perform hierarchical clustering quickly, but still there are many important variables to consider. So we can say that the all indicators tell our life standard in general developed upward quite dramatically. There are definitely a high possibility for us to keep improving those indicators, but we should not forget about the fact that we probably need much further analysis to determine to answer the initial questions.
+
+
+### References
+
+- Course slides by Prof. Olga Scrivner
+
+- My code portfolio Week 7, 10, 11
+
+- "Yarrr! The pirate’s guide to R" by Phillips, N. D. (2016)
+[https://bookdown.org/ndphillips/YaRrr/](https://bookdown.org/ndphillips/YaRrr/)
+
+- "The Art of Data Science: A Guide for Anyone Who Works with Data" by Peng, R. D. & Matsui, E. (2018)
+[http://leanpub.com/artofdatascience](http://leanpub.com/artofdatascience)
+
+- "Exploratory Data Analysis with R" by Peng, R. D. (2016) [https://bookdown.org/rdpeng/exdata/](https://bookdown.org/rdpeng/exdata/)
+    
+- "R for Data Science" by Grolemund, G., & Wichham, H. (2018)
+[https://r4ds.had.co.nz/index.html](https://r4ds.had.co.nz/index.html)
