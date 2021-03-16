@@ -17,11 +17,19 @@ library(dendextend)
 ``hclust()`` implements hierarchical clustering. Suitable for Agglomerative Hierarchical Clustering. Below is an example of hierarchical clustering of the data US Arrest, with agglomeration method = manhattan and hc method = average.
 
 ```{r, message=FALSE, warning=FALSE}
-df11 <- USArrests
-df11 <- scale(df11)
+ft <- gmNA3
+ft1 <- gmNA3$
+df11 <- scale(df01)
 head(df11)
 ```
 ```{r, message=FALSE, warning=FALSE}
+immidataNoNA <- na.omit(gmNA3)
+immidataNoNA2 <- as.numeric(select(immidataNoNA, -life, -income))
+df11 <- scale(immidataNoNA2)
+```
+
+
+
 d11 <- dist(df11, method = "manhattan")
 hc11 <- hclust(d11, method = "average" )
 plot(hc11, cex = 0.7, hang = -1)
