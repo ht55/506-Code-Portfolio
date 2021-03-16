@@ -1,2 +1,2 @@
 # ANLY506
-### Exploratory Data Analysis
+### Exploratory Data Analysis with R
